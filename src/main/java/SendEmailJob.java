@@ -27,7 +27,7 @@ public class SendEmailJob implements Job {
         Session session = Session.getInstance(props);
         try {
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("from-email@gmail.com"));
+            message.setFrom(new InternetAddress("matt@wakanda.com"));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse("test@example.com"));
             message.setSubject("Once In A Lifetime Opportunity");
             message.setText("Dear Sir / Madam,\n\nI am the reigning Prince of Wakanda. I have inherited a large sum of " +
@@ -40,7 +40,7 @@ public class SendEmailJob implements Job {
 
             Transport.send(message);
 
-            System.out.println("Done");
+            logger.info("... mail successfully sent.");
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }

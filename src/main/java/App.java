@@ -1,7 +1,6 @@
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetupTest;
 import org.quartz.*;
-import org.quartz.impl.JobDetailImpl;
 import org.quartz.impl.StdSchedulerFactory;
 
 public class App {
@@ -10,7 +9,19 @@ public class App {
 
     public static void main(String[] args) throws SchedulerException {
         App.startTestMailServer();
+
         App.startScheduler();
+    }
+
+
+    private static void startTestMailServer() {
+        ServerSetupTest.setPortOffset(BASE_PORT);
+        GreenMail greenMail = new GreenMail(
+                ServerSetupTest.ALL
+        );
+
+        greenMail.setUser("test@example.com", "test");
+        greenMail.start();
     }
 
     private static void startScheduler() throws SchedulerException {
@@ -24,26 +35,11 @@ public class App {
                 .newTrigger()
                 .withIdentity("test1", "group1")
                 .startNow()
-                    .withSchedule(CronScheduleBuilder.cronSchedule("0/15 * * * * ?"))
-                    .build();
+                .withSchedule(CronScheduleBuilder.cronSchedule("0/15 * * * * ?"))
+                .build();
 
         scheduler.scheduleJob(job, trigger);
 
         scheduler.start();
-    }
-
-    private static void startTestMailServer() {
-        ServerSetupTest.setPortOffset(BASE_PORT);
-        GreenMail greenMail = new GreenMail(
-                ServerSetupTest.ALL
-        );
-
-        greenMail.setUser("test@example.com", "test");
-        greenMail.start();
-    }
-
-    private class SendEmailJobDetail extends JobDetailImpl {
-
-
     }
 }
